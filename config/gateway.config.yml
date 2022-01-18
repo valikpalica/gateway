@@ -1,0 +1,62 @@
+http:
+  port: 8080
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  # see: http://www.express-gateway.io/docs/configuration/gateway.config.yml/apiEndpoints
+  crudService: 
+    host: localhost
+    path: ['/type_anceta/*']
+  authService: 
+    host: localhost
+    path: ['/auth/*']
+serviceEndpoints:
+  # see: http://www.express-gateway.io/docs/configuration/gateway.config.yml/serviceEndpoints
+  anceta: 
+    url: 'http://localhost:8001'
+  auth:
+    url: 'http://localhost:8000'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+  - jwt
+pipelines:
+  auth-pipeline:
+    apiEndpoints:
+      - authService
+    policies:
+      - proxy: 
+        - action:
+            serviceEndpoint: auth
+  crud-pipeline:
+    apiEndpoints:
+      - crudService
+    policies:
+      - jwt:
+        - action:
+            secretOrPublicKey: SECRET_ACCESS_TOKEN
+            checkCredentialExistence: false
+      - proxy: 
+        - action:
+            serviceEndpoint: anceta 
+
+  # crudPipline:
+  #   apiEndpoints:
+  #     - crudService
+  #   policies:
+  #   - jwt:
+  #     -action:
+  #           jwtExtractor: ['header']
+  #           jwtExtractorField: Authorization
+  #   - proxy:
+  #     - action:
+  #         serviceEndpoint: auth
+  #         changeOrigin: true
+  
