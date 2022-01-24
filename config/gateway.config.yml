@@ -32,6 +32,10 @@ pipelines:
     apiEndpoints:
       - authService
     policies:
+      - cors:
+        - action:
+            origin: http://localhost:3000
+            credentials: true
       - proxy: 
         - action:
             serviceEndpoint: auth
@@ -39,6 +43,10 @@ pipelines:
     apiEndpoints:
       - crudService
     policies:
+      - cors:
+        - action:
+            origin: http://localhost:3000
+            credentials: true
       - jwt:
         - action:
             secretOrPublicKey: SECRET_ACCESS_TOKEN
@@ -46,17 +54,3 @@ pipelines:
       - proxy: 
         - action:
             serviceEndpoint: anceta 
-
-  # crudPipline:
-  #   apiEndpoints:
-  #     - crudService
-  #   policies:
-  #   - jwt:
-  #     -action:
-  #           jwtExtractor: ['header']
-  #           jwtExtractorField: Authorization
-  #   - proxy:
-  #     - action:
-  #         serviceEndpoint: auth
-  #         changeOrigin: true
-  
